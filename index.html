@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Sudoku Game</title>
+    <style>
+        body {
+    background-color: teal;
+}
+#container {
+    display: grid;
+    grid-template-columns: repeat(9, 10%);
+    margin: 2px 20% 0 20%;
+    
+}
+
+input {
+    text-align: center;
+   
+    height: 50px;
+    font-size: 25px;
+    border: 2px black solid;
+
+}
+
+h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-family: Forte;
+    padding: 20px;
+    margin: 50px;
+    font-size: 50px;
+    text-shadow: hotpink 2px 2px;
+    
+}
+h1:hover{
+    color: #c95e76;
+    text-shadow: black 5px 4px;
+}
+h2 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 30px;
+    color: peachpuff;
+}
+h3 {
+    font-size: 23px;
+}
+li {
+    font-size: 20px;
+    color: palegreen;
+}
+
+.btn{
+    text-align: center;
+    margin: 10px;
+}
+.button{
+    border-radius: 10px;
+    color: yellow;
+    background-color: #243859;
+    
+}
+
+input{
+    background-color: skyblue;
+}
+
+
+.button:hover {
+    color: blueviolet;
+    
+}
+
+footer{
+    float: right;
+    margin: 25px -8px 0 0;
+    font-size: 18x;
+    background-color: #243859;
+    color: aliceblue;
+}
+    </style>
+</head>
+<body>
+    <h1> Sudoku Checker </h1>
+    <div id="container">
+    
+    </div>
+   <div class="btn"> 
+       <input class="button" type="button" value="New Game" onclick='refreshPage()'>
+    </div>
+    <h2>How to play</h2>
+    <h3>Sudoku is a puzzle based on a small number of very simple rules:</h3>
+    <li>Every square has to contain a single number</li>
+    <li>Only the numbers from 1 through to 9 can be used</li>
+    <li>Each 3×3 box can only contain each number from 1 to 9 once
+    </li>
+    <li>Each vertical column can only contain each number from 1 to 9 once</li>
+    <li>Each horizontal row can only contain each number from 1 to 9 once</li>
+
+    <footer>
+        <p>Created by B Dada Khalandar Syammed2924</p>
+        
+    </footer>
+</body>
+</html>
+
+<!--JS code part-->
+<script>
+     var sudoku = [[],[],[],[],[],[],[],[],[]]
+
+    function createGrid() {
+       
+    var myContainer = document.getElementById('container')
+    
+
+    for(var i=0;i<9;i++) {
+        for(var j=0;j<9;j++) {
+            var myInput = document.createElement('input')
+            
+            myInput.id = `${i}${j}`
+            
+
+            var number = Math.ceil(Math.random()*9)
+            
+            myInput.row = i
+            myInput.col = j
+            if(isSafe(sudoku,i,j,number)){
+                myInput.value = number
+                myInput.readOnly= true
+             } else {
+                     number = 0
+                    myInput.value = '' 
+
+                     }
+             sudoku[i][j] = number
+             myContainer.appendChild(myInput)
+
+            myInput.oninput = function(e) {
+       checkAnswer(sudoku,e)
+    }
+    }
+    }
+    }
+ 
+//creating a grid
+createGrid()
+    function isSafe(grid,row,col,num){
+
+        for(var x=0;x<9;x++){
+            if(grid[row][x]==num){
+                return false
+            }
+        }
+        for(var y=0;y<9;y++){
+            if(grid[y][col]==num){
+                return false
+            }
+        }
+
+        var startRow = row - (row%3)
+        var startCol = col - (col%3)
+
+        for(var m =0; m<3;m++){
+            for(var n=0;n<3;n++){
+                if(grid[m+startRow][n+startCol]==num){
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+//checkAnswer() to checking the answers
+
+function checkAnswer(grid,e){
+    var row= e.target.row
+    var col = e.target.col
+    var num= Number(e.data)
+    var id = e.target.id
+
+    if(num == ''){
+           return false
+    }
+    for(var x=0;x<9;x++){
+        if(grid[row][x]==num){
+            showColors('red',id)
+            return false
+        }
+    }
+    for(var y=0;y<9;y++){
+        if(grid[y][col]==num){
+            showColors('red',id)
+            return false
+        }
+    }
+    var startRow = row - (row%3)
+    var startCol = col - (col%3)
+
+    for(var m=0;m<3;m++){
+        for(var n=0;n<3;n++){
+            if(grid[m+startRow][n+startCol] == num ){
+                showColors('red',id)
+                return false
+            }
+        }
+    }
+    showColors('green', id)
+    return true
+}
+
+//Function showColors for showing the error with the colors
+function showColors(color, id){
+    var inp= document.getElementById(id)
+    if(color == "red"){
+        inp.style.backgroundColor='red'
+
+    }else {
+        inp.style.backgroundColor='green'
+    }
+}
+
+//Refresh webpage
+function refreshPage(){
+				if(confirm("Are you sure,you want to refresh?")){
+					location.reload();
+				}else {
+                    return false
+                }			
+			}
+</script>
